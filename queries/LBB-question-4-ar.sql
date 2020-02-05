@@ -33,5 +33,23 @@ DESCRIPTION ::
         ...
 
 
+*/
+SELECT *
+FROM fielding;
 
-*/SELECT *
+SELECT yearid, 
+    CASE WHEN pos LIKE 'of' AND yearid = 2016 THEN 'Outfield'
+    WHEN pos LIKE 'ss' AND yearid = 2016 THEN 'Infield'
+    WHEN pos LIKE '1b' AND yearid = 2016 THEN 'Infield'
+    WHEN pos LIKE '2b' AND yearid = 2016 THEN 'Infield'
+    WHEN pos LIKE '3b' AND yearid = 2016 THEN 'Infield'
+    WHEN pos LIKE 'p' AND yearid = 2016 THEN 'Battery'
+	WHEN pos LIKE 'c' AND yearid = 2016 THEN 'Battery'
+    ELSE 'Other'
+    END AS position
+
+FROM fielding
+GROUP BY position, yearid
+HAVING yearid = 2016
+
+
