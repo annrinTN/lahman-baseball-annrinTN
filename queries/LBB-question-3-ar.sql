@@ -45,27 +45,6 @@ DESCRIPTION ::
 --people query without filters gives 19,112 player names
 --attempt to use CTE to join player names from people to collegeplaying on playerid 
 --then to schools on schoolid then to salaries on player id
-/*WITH s1 AS (
-	SELECT playerid AS player, salary
-FROM salaries AS s),
-
---s2 gives 65 rows of Vandy players
-s2 AS (
-	SELECT schoolid, playerid AS player
-FROM collegeplaying AS cp
-WHERE schoolid LIKE 'vand%'
---INNER JOIN
-SELECT DISTINCT p.playerid AS player, namefirst, namelast
-FROM people AS p 
-
-INNER JOIN schools AS s
-ON s.playerid = p.playerid
-WHERE schoolid LIKE 'vand%' )
-
-
-GROUP BY player, s.salary DESC
-*/
-
 WITH s1 AS (
 SELECT DISTINCT p.playerid AS player, namefirst, namelast
 FROM people AS p ),
