@@ -51,12 +51,17 @@
 */
 
 
-SELECT *
+SELECT DISTINCT wswin
 FROM teams;
 
-SELECT yearid, name AS team, SUM(g) AS games, NOT NULL wswin, SUM(w) AS wins, sum(l) AS losses
+SELECT 
+     CASE WHEN wswin  = 'Y' THEN 1
+     ELSE 0
+	 END AS world_series_wins, 
+yearid, name AS team, SUM(g) AS games, 
+SUM(w) AS wins, sum(l) AS losses
 
 FROM teams
-WHERE yearid>=1970 
-GROUP BY name, yearid
-ORDER BY wswin DESC;
+WHERE yearid>=1970 AND wswin IS NOT NULL AND wswin NOT 0
+GROUP BY name, yearid, wswin
+ORDER BY wins DESC;
