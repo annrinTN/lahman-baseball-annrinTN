@@ -8,17 +8,21 @@
 	Report the park name, team name, and average attendance. Repeat for the lowest 5 average attendance.
 
     SOURCES ::
-        * ...homegames
+        * homegames, teams and parks
     DIMENSIONS ::
-        * ... team, park, attendance
-		INNER JOIN parks for park name and teams for team name
+        * team, park, attendance
+		  INNER JOIN parks for park name and teams for team name
     FACTS ::
-        Non- Major league teams were included
-		Busch Stadium III had the top attendance for a park and the team St Louis Perfectos
-    FILTERS ::
-        * year = 2016 games >10
+        Teams also needed to join on year to et correct team name for 2016
+		 ** without that join Busch Stadium III had the top attendance for a park and the team St Louis Perfectos 
+		 but those weren't the right teams in 2016
+	==	 Actual top team was the LA Dodgers in Dodger Stadium
+	==	 and the least was the Tampa Bay Rays in Tropicana Field
+    
+	FILTERS ::
+        * year = 2016 on both homegames and teams tables and on games >10
     DESCRIPTION ::
-        ...
+        examples of multiple inner joins
     ANSWER ::
 	    TOP FIVE attendance by TEAM
 attendance_avg	team_name	            park_name
