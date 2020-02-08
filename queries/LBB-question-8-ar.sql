@@ -11,58 +11,111 @@
         * ...homegames
     DIMENSIONS ::
         * ... team, park, attendance
-
-
-
+		INNER JOIN parks for park name and teams for team name
     FACTS ::
-
-        * ...
-
-
-
+        Non- Major league teams were included
+		Busch Stadium III had the top attendance for a park and the team St Louis Perfectos
     FILTERS ::
-
-        * ...
-
-
-
+        * year = 2016 games >10
     DESCRIPTION ::
-
         ...
-
-
-
     ANSWER ::
+	    TOP FIVE attendance by TEAM
+attendance_avg	team_name	            park_name
+3703312     	Los Angeles Dodgers	    Dodger Stadium
+3444490	        St. Louis Cardinals	    Busch Stadium III
+3392099	        Toronto Blue Jays	    Rogers Centre
+3365256	        San Francisco Giants	AT&T Park
+3232420	        Chicago Cubs	        Wrigley Field
 
-        ...
+		
+		TOP FIVE attendance by PARK
+attendance_avg	park_name	        team_name
+3703312	        Dodger Stadium	    Los Angeles Dodgers
+3444490	        Busch Stadium III	St. Louis Cardinals
+3392099	        Rogers Centre	    Toronto Blue Jays
+3365256	        AT&T Park	         San Francisco Giants
+3232420	        Wrigley Field	     Chicago Cubs
 
-
+        LEAST attendance by TEAM
+attendance_avg	team_name	        park_name
+1286163	        Tampa Bay Rays	    Tropicana Field
+1521506	        Oakland Athletics	Oakland-Alameda County Coliseum
+1591667	        Cleveland Indians	Progressive Field
+1712417	        Miami Marlins	    Marlins Park
+1746293	        Chicago White Sox	U.S. Cellular Field
+	   
+		LEAST attendance by PARK
+attendance_avg	park_name	                    team_name
+1286163	        Tropicana Field	                Tampa Bay Rays
+1521506	        Oakland-Alameda County Coliseum	Oakland Athletics
+1591667	        Progressive Field	            Cleveland Indians
+1712417	        Marlins Park	                Miami Marlins
+1746293	        U.S. Cellular Field	            Chicago White Sox
 
 */
-
-
-
+-- Check Table
 SELECT *
 FROM homegames;
 
-SELECT year, team, SUM(homegames.attendance) AS attendance, COUNT(games) AS eligible_games,
-SUM(homegames.attendance) OVER (PARTITION BY team) AS attendance_avg,
-teams.name AS team_name
+--TOP FIVE attendance by Team
+SELECT year, homegames.attendance / COUNT(games) AS attendance_avg,
+teams.name AS team_name, park_name
 FROM homegames
    INNER JOIN
    teams
-   ON homegames.team = teams.teamid
+   ON homegames.team = teams.teamid AND homegames.year = teams.yearid
+   INNER JOIN
+   parks
+   ON homegames.park = parks.park
 WHERE year = 2016 AND games > 10 
-GROUP BY year, team, homegames.attendance,  teams.name
+GROUP BY teams.name, year, park_name, homegames.attendance
+ORDER BY attendance_avg DESC
+LIMIT 5
+;
+-- TOP FIVE attendance by Park
+SELECT year, homegames.attendance / COUNT(games) AS attendance_avg, 
+park_name, teams.name AS team_name
+FROM homegames
+    INNER JOIN
+	teams
+	ON homegames.team = teams.teamid AND homegames.year = teams.yearid
+    INNER JOIN
+	parks
+	ON homegames.park = parks.park
+WHERE year = 2016 AND games > 10 
+GROUP BY year, park_name, teams.name, homegames.attendance
 ORDER BY attendance_avg DESC
 LIMIT 5
 ;
 
-SELECT year, park, SUM(attendance) AS attendance, COUNT(games) AS eligible_games,
-SUM(attendance) OVER (PARTITION BY park) AS attendance_avg
+-- LEAST FIVE ATTENDANCE by TEAM
+SELECT year, homegames.attendance / COUNT(games) AS attendance_avg,
+teams.name AS team_name, park_name
 FROM homegames
+   INNER JOIN
+   teams
+   ON homegames.team = teams.teamid AND homegames.year = teams.yearid
+   INNER JOIN
+   parks
+   ON homegames.park = parks.park
 WHERE year = 2016 AND games > 10 
-GROUP BY year, park, homegames.attendance
-ORDER BY homegames.attendance DESC
+GROUP BY teams.name, year, park_name, homegames.attendance
+ORDER BY attendance_avg 
+LIMIT 5
+;
+-- LEAST FIVE attendance by park
+SELECT year, homegames.attendance / COUNT(games) AS attendance_avg, 
+park_name, teams.name AS team_name
+FROM homegames
+    INNER JOIN
+	teams
+	ON homegames.team = teams.teamid AND homegames.year = teams.yearid
+    INNER JOIN
+	parks
+	ON homegames.park = parks.park
+WHERE year = 2016 AND games > 10 
+GROUP BY year, park_name, teams.name, homegames.attendance
+ORDER BY attendance_avg 
 LIMIT 5
 ;
