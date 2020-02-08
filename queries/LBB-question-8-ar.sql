@@ -8,14 +8,9 @@
 	Report the park name, team name, and average attendance. Repeat for the lowest 5 average attendance.
 
     SOURCES ::
-
         * ...homegames
-
-
-
     DIMENSIONS ::
-
-        * ...
+        * ... team, park, attendance
 
 
 
@@ -48,11 +43,26 @@
 
 
 SELECT *
-
 FROM homegames;
 
-SELECT year, team, park, SUM(attendance) AS attendance, COUNT(games) AS eligible_games
+SELECT year, team, SUM(homegames.attendance) AS attendance, COUNT(games) AS eligible_games,
+SUM(homegames.attendance) OVER (PARTITION BY team) AS attendance_avg,
+teams.name AS team_name
+FROM homegames
+   INNER JOIN
+   teams
+   ON homegames.team = teams.teamid
+WHERE year = 2016 AND games > 10 
+GROUP BY year, team, homegames.attendance,  teams.name
+ORDER BY attendance_avg DESC
+LIMIT 5
+;
 
+SELECT year, park, SUM(attendance) AS attendance, COUNT(games) AS eligible_games,
+SUM(attendance) OVER (PARTITION BY park) AS attendance_avg
 FROM homegames
 WHERE year = 2016 AND games > 10 
-GROUP BY year, team, park;
+GROUP BY year, park, homegames.attendance
+ORDER BY homegames.attendance DESC
+LIMIT 5
+;
